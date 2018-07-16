@@ -1,6 +1,6 @@
 // utils/colors.js
 
-export const purple = '#292477';
+export const purple = 'purple';
 export const gray = '#757575';
 export const white = '#fff';
 export const red = '#b71845';

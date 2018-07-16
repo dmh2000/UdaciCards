@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Platform, Text, View } from 'react-native';
+import { StyleSheet,  View , StatusBar, Platform} from 'react-native';
 import {createBottomTabNavigator, createStackNavigator} from 'react-navigation';
 import DeckListView from './components/DeckListView';
 import DeckView from './components/DeckView';
@@ -7,8 +7,9 @@ import NewDeckView from './components/NewDeckView';
 import NewQuestionView from './components/NewQuestionView';
 import QuizView from './components/QuizView';
 import {FontAwesome} from '@expo/vector-icons';
+import {Constants} from 'expo';
 
-import {white,purple} from './utils/colors';
+import {white, black} from './utils/colors';
 
 const Tabs = createBottomTabNavigator (
   {
@@ -33,20 +34,6 @@ const Tabs = createBottomTabNavigator (
         tabBarIcon: ({tintColor}) => <FontAwesome name='plus' size={30} color={tintColor}/>
       }
     }, 
-    NewQuestionView : {
-      screen: NewQuestionView,
-      navigationOptions: {
-        tabBarLabel: 'New Question',
-        tabBarIcon: ({tintColor}) => <FontAwesome name='plus-square' size={30} color={tintColor}/>
-      }
-    }, 
-    QuizView : {
-      screen: QuizView,
-      navigationOptions: {
-        tabBarLabel: 'Quiz',
-        tabBarIcon: ({tintColor}) => <FontAwesome name='question' size={30} color={tintColor}/>
-      }
-    }
   },
   {
     navigationOptions: {
@@ -55,10 +42,10 @@ const Tabs = createBottomTabNavigator (
   },
   {
   tabBarOptions : {
-    activeTintColor: Platform.OS === 'ios' ? purple : white,
+    //activeTintColor:  purple,
     style: {
       height: 56,
-      backgroundColor: Platform.OS === 'ios' ? white : purple,
+      backgroundColor:  white,
       shadowColor: 'rgba(0,0,0,0.24)',
       shadowOffset: {
         width:0,
@@ -85,6 +72,7 @@ const MainNavigator = createStackNavigator({
   },
   DeckView : {
     screen:DeckView,
+    headerMode: Platform.ios ? 'float' : 'screen',
     navigationOptions: {
       header:null
     }
@@ -109,10 +97,19 @@ const MainNavigator = createStackNavigator({
   },
 });
 
+function CardStatusBar ({backgroundColor,...props}) {
+  return (
+    <View style={{backgroundColor, height: Constants.statusBarHeight}}>
+      <StatusBar translucent backgroundColor={backgroundColor} {...props}/>
+    </View>
+  );
+}
+
 export default class App extends React.Component {
   render() {
     return (
       <View style={{flex:1}}>
+        <CardStatusBar backgroundColor={black} barStyle='light-content'/>
         <MainNavigator/>
       </View>
 
