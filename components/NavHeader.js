@@ -14,10 +14,10 @@ function NavButton({children,onPress, style={}})
   );
 }
 
-export default function NavHeader({title}) {
+export default function NavHeader({title,onPress}) {
   return (
     <View style={styles.container}>
-      <NavButton style={styles.title}>
+      <NavButton style={styles.title} onPress={onPress}>
       {'   '} <FontAwesome name='arrow-left' color={white}/> {'   '} {title}
       </NavButton>
     </View>

@@ -9,7 +9,7 @@ import QuizView from './components/QuizView';
 import {FontAwesome} from '@expo/vector-icons';
 import {Constants} from 'expo';
 
-import {white, black} from './utils/colors';
+import {white, black, blue} from './utils/colors';
 
 const Tabs = createBottomTabNavigator (
   {
@@ -20,13 +20,6 @@ const Tabs = createBottomTabNavigator (
         tabBarIcon: ({tintColor}) => <FontAwesome name='home' size={30} color={tintColor}/>
       }
     },
-    DeckView : {
-      screen: DeckView,
-      navigationOptions: {
-        tabBarLabel: 'Deck',
-        tabBarIcon: ({tintColor}) => <FontAwesome name='bars' size={30} color={tintColor}/>
-      }
-    }, 
     NewDeckView : {
       screen: NewDeckView,
       navigationOptions: {
@@ -109,7 +102,7 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={{flex:1}}>
-        <CardStatusBar backgroundColor={black} barStyle='light-content'/>
+        <CardStatusBar backgroundColor={blue} barStyle='light-content'/>
         <MainNavigator/>
       </View>
 

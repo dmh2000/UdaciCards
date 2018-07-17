@@ -7,22 +7,55 @@ import {black,white,gray} from '../utils/colors';
 
 
 export default class DeckView extends React.Component {
-  onPress() {
+
+  // component state
+  state = {
+    cards: 0
+  }
+
+  // bind onPress to this via arrow function
+  onNavPress = () => {
     this.props.navigation.navigate('DeckListView');
   }
 
+  // handle non,singular,plural
+  showCards(cards) {
+    switch(cards) {
+      case 0:
+        return 'No Cards';
+      case 1:
+        return '1 Card';
+      default:
+        return `${cards.toString()} Cards`;
+    }
+  }
+
+  // navigate to quiz view
+  gotoQuiz = () => {
+    const deckName = this.props.navigation.state.params.deckName;    
+    this.props.navigation.navigate('QuizView', {deckName:deckName});
+  }
+
+  // navigate to add question
+  addQuestion = () => {
+    this.props.navigation.navigate('NewQuestionView');
+  }
+
+  // render
   render() {
+    console.log(this.props);
+    const deckName = this.props.navigation.state.params.deckName;
     return (
       <View style={styles.container}>
-        <NavHeader title='udacicards' onPress={this.onPress}/>
+        <NavHeader title='udacicards' onPress={this.onNavPress}/>
         <View style={styles.container}>
           <View style={styles.top}>
-            <Text style={styles.title}>Title</Text>
-            <Text style={styles.count}>1 card</Text>
+            <Text style={styles.title}>{deckName}</Text>
+            <Text style={styles.count}>{this.showCards(this.state.cards)}</Text>
           </View>
           <View style={styles.bottom}>
-            <TextButton style={styles.whiteButton}>Start Quiz</TextButton>
-            <TextButton style={styles.blackButton}>Add Question</TextButton>
+            <TextButton style={styles.whiteButton} onPress={this.addQuestion}>Add Card</TextButton>
+            <TextButton style={styles.blackButton} onPress={this.gotoQuiz}>Start Quiz</TextButton>
           </View>
         </View>
       </View>
