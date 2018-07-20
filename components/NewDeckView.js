@@ -9,7 +9,8 @@ export default class NewDeckView extends React.Component {
 
   // object state
   state = {
-    text:""
+    text:"",
+    warn:"none"
   }
 
   // bind onPress to this via arrow function
@@ -17,8 +18,13 @@ export default class NewDeckView extends React.Component {
     this.props.navigation.navigate('DeckListView');
   }
 
+  onChange = (text) => {
+    return this.setState({
+      text:text
+    });
+  }
+
   onSubmit = () => {
-    console.log('submit');
     const deckName = this.state.text;
 
     // clear text
@@ -33,7 +39,7 @@ export default class NewDeckView extends React.Component {
   // render
   render() {
     const {height,width} = Dimensions.get('window');
-    console.log(height,width);
+    const disable = this.state.text.length === 0;
     return (
       <View style={styles.container1}>
         <NavHeader title='udacicards' onPress={this.onNavPress}/>
@@ -41,10 +47,14 @@ export default class NewDeckView extends React.Component {
           <Text style={styles.name}>Name Your Deck!</Text>
           <TextInput
             style={[styles.input,{width:(width * 0.8)}]}
-            onChangeText={(text) => this.setState({text})}
+            onChangeText={this.onChange}
             value={this.state.text}
             />
-            <TextButton style={styles.blackButton} onPress={this.onSubmit}>Submit</TextButton>
+          <TextButton 
+            style={styles.blackButton} 
+            onPress={this.onSubmit} 
+            disabled={disable}
+            >Submit</TextButton>
         </View>
       </View>
     );

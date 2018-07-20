@@ -1,13 +1,23 @@
 import React from 'react';
-import { StyleSheet, TextInput, Text,  View, Dimensions} from 'react-native';
+import { StyleSheet, 
+         TextInput, 
+         Text,  
+         View, 
+         Dimensions,
+        Animated} from 'react-native';
 
 import NavHeader from './NavHeader';
 import TextButton from './TextButton';
 import {green,red,white} from '../utils/colors';
 
 export default class NewDeckView extends React.Component {
-  state  = {
-    show:false
+
+  constructor() {
+    super();
+
+    this.state  = {
+      showAnswer:false,
+    }
   }
 
   // bind onPress to this via arrow function
@@ -35,26 +45,57 @@ export default class NewDeckView extends React.Component {
   // toggle show answer
   onAnswer = () => {
     this.setState( {
-      show:!this.state.show
+      showAnswer:!this.state.showAnswer
     });
   }
 
+  display = () => {
+    if (this.state.showAnswer) {
+      // show answer text
+      return (
+        <View style={styles.show}>
+          <Text style={styles.question}>Yes</Text>
+          <TextButton 
+            style={styles.answerButton} 
+            onPress={this.onAnswer}
+            disabled={false}
+          >Question</TextButton>
+        </View>
+      )
+    }
+    else {
+      // show question text
+      return (
+        <View style={styles.show}>
+          <Text style={styles.question}>Wut!</Text>
+          <TextButton 
+            style={styles.answerButton} 
+            onPress={this.onAnswer}
+            disabled={false}
+            >Answer</TextButton>
+        </View>
+      )
+    }
+  }
    // render
   render() {
     const {height,width} = Dimensions.get('window');
-    console.log(height,width);
     return (
       <View style={styles.container1}>
         <NavHeader title='Quiz' onPress={this.onNavPress}/>
         <Text style={styles.count}>1/1</Text>
         <View style={styles.container2}>
-          <Text style={styles.question}>Wut!</Text>
-          {this.state.show  
-            ? <TextButton style={styles.answerButton} onPress={this.onAnswer}>...answer...</TextButton>
-            : <TextButton style={styles.answerButton} onPress={this.onAnswer}>Show Answer</TextButton>
-          }
-          <TextButton style={styles.greenButton} onPress={this.onCorrect}>Correct</TextButton>
-          <TextButton style={styles.redButton} onPress={this.onIncorrect}>Incorrect</TextButton>
+          {this.display()}
+          <TextButton
+            style={styles.greenButton} 
+            onPress={this.onCorrect}
+            disabled={false}
+            >Correct</TextButton>
+          <TextButton 
+            style={styles.redButton} 
+            onPress={this.onIncorrect}
+            disabled={false}
+            >Incorrect</TextButton>
         </View>
       </View>
     );
@@ -75,6 +116,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },  
+  show: {
+    alignItems: 'center',
+  }, 
   greenButton: {
     backgroundColor:green,
     color:white,

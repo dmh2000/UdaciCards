@@ -10,7 +10,8 @@ export default class DeckView extends React.Component {
 
   // component state
   state = {
-    cards: 0
+    cards: 0,
+    disableStart:true
   }
 
   // bind onPress to this via arrow function
@@ -43,8 +44,9 @@ export default class DeckView extends React.Component {
 
   // render
   render() {
-    console.log(this.props);
     const deckName = this.props.navigation.state.params.deckName;
+    const disableSubmit = this.state.cards === 0;
+
     return (
       <View style={styles.container}>
         <NavHeader title='udacicards' onPress={this.onNavPress}/>
@@ -55,7 +57,12 @@ export default class DeckView extends React.Component {
           </View>
           <View style={styles.bottom}>
             <TextButton style={styles.whiteButton} onPress={this.addQuestion}>Add Card</TextButton>
-            <TextButton style={styles.blackButton} onPress={this.gotoQuiz}>Start Quiz</TextButton>
+            <TextButton 
+              style={styles.blackButton}
+              onPress={this.gotoQuiz}
+              disabled={disableSubmit}
+              >Start Quiz
+            </TextButton>
           </View>
         </View>
       </View>

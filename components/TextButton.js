@@ -1,12 +1,19 @@
 import React from 'react';
 import {Text,TouchableOpacity,StyleSheet} from 'react-native';
-import {blue,white} from '../utils/colors';
+import {black,gray} from '../utils/colors';
 
-export default function TextButton({children,onPress, style={}})
+export default function TextButton({children,onPress, style={},disabled})
 {
+  const textStyle = disabled 
+  ? [styles.reset,style,{backgroundColor:gray}]
+  : [styles.reset,style];
+
   return (
-    <TouchableOpacity onPress={onPress}>
-      <Text style={[styles.reset,style]}>{children}</Text>
+    <TouchableOpacity 
+      onPress={onPress} 
+      disabled={disabled}
+      >
+      <Text style={textStyle}>{children}</Text>
     </TouchableOpacity>
   );
 }
