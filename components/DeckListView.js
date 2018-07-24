@@ -1,4 +1,6 @@
+// library module imports
 import React from 'react';
+import {connect} from 'react-redux';
 import { 
   StyleSheet, 
   Text, 
@@ -8,23 +10,23 @@ import {
   Animated
 } from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
+
+// application local imports
 import TextButton from './TextButton';
-import {createId,getDecks} from '../utils/api.js';
+import {loadDecks} from '../actions';
 import {black,gray, white} from '../utils/colors';
 
-export default class DeckListView extends React.Component {
+/**
+ * show the list of available decks
+ * or a way to create the first one
+ */
+class DeckListView extends React.Component {
   state = {
-    decks: {},
     bounceValue: new Animated.Value(0)
   }
 
   componentDidMount() {
-    getDecks()
-      .then( (decks) => {
-        this.setState(() => ({
-          decks
-        }));
-      });
+    this.props.dispatch(loadDecks());
   }
   
   onPressNew = () => {
@@ -75,7 +77,16 @@ export default class DeckListView extends React.Component {
   }
   
   render() {
-    if (!this.state.decks) {
+    // no such prop yet
+    if (!this.props.hasOwnProperty('decks')) { 
+      return (
+        <View>
+        </View>
+      );
+    }
+
+    // empty decks prop
+    if (Object.keys(this.props.decks).length === 0) {
       return (
         <View style={styles.container}>
           <Text style={[styles.title,{paddingBottom:40}]}>No Decks Yet! Create One!</Text>
@@ -85,6 +96,8 @@ export default class DeckListView extends React.Component {
         </View>
       )
     }
+
+    // got some decks, show them
     return (
       <Animated.View style={[styles.container,{transform: [{scaleX:this.state.bounceValue}]}]}>
         {this.renderDeckList(this.state.decks)}
@@ -92,6 +105,15 @@ export default class DeckListView extends React.Component {
     );
   }
 }
+
+// connect to redux
+function mapStateToProps(state) {
+  return Object.assign({},state);
+}
+
+// export connected view
+export default connect(mapStateToProps)(DeckListView);
+
 
 const styles = StyleSheet.create({
   container: {

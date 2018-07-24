@@ -2,32 +2,7 @@ import {AsyncStorage} from 'react-native';
 
 export const DECK_STORAGE_KEY = 'UdaciCards:desks';
 
-const dummy = {
-  React: {
-    title: 'React',
-    questions: [
-      {
-        question: 'What is React?',
-        answer: 'A library for managing user interfaces'
-      },
-      {
-        question: 'Where do you make Ajax requests in React?',
-        answer: 'The componentDidMount lifecycle event'
-      }
-    ]
-  },
-  JavaScript: {
-    title: 'JavaScript',
-    questions: [
-      {
-        question: 'What is a closure?',
-        answer: 'The combination of a function and the lexical environment within which that function was declared.'
-      }
-    ]
-  }
-};
-
-export function getDecks() {
+export function _getDecks() {
   return AsyncStorage.getItem(DECK_STORAGE_KEY)
   .then( (results) => {
     // no decks yet
@@ -38,18 +13,12 @@ export function getDecks() {
       });
     }
     else {
-      return dummy;
+      return results;
     }
-  })
-  .then( (results) => {
-    return results;
-  })
-  .catch( (error) => {
-    return null;
   });
 }
 
-export function getDeck(id) {
+export function _getDeck(id) {
   return AsyncStorage.getItem(DECK_STORAGE_KEY)
   .then( (results) => {
     return dummy[id];
@@ -59,11 +28,11 @@ export function getDeck(id) {
   });
 }
 
-export function saveDeckTitle(title) {
+export function _saveDeckTitle(title) {
 
 }
 
-export function addCardToDeck(title,card) {
+export function _addCardToDeck(title,card) {
 
 }
 

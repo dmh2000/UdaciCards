@@ -1,15 +1,22 @@
+// library module imports
 import React from 'react';
 import { StyleSheet,  View , StatusBar, Platform} from 'react-native';
 import {createBottomTabNavigator, createStackNavigator} from 'react-navigation';
+import {FontAwesome} from '@expo/vector-icons';
+import {Constants} from 'expo';
+import {createStore} from 'redux';
+import {Provider} from 'react-redux';
+
+// application local imports
 import DeckListView from './components/DeckListView';
 import DeckView from './components/DeckView';
 import NewDeckView from './components/NewDeckView';
 import NewQuestionView from './components/NewQuestionView';
 import QuizView from './components/QuizView';
-import {FontAwesome} from '@expo/vector-icons';
-import {Constants} from 'expo';
-
 import {white, black, blue} from './utils/colors';
+import reducer from './reducers';
+import middleware from './middleware';
+
 
 const Tabs = createBottomTabNavigator (
   {
@@ -98,14 +105,18 @@ function CardStatusBar ({backgroundColor,...props}) {
   );
 }
 
+// create redux store
+const store = createStore(reducer,middleware);
+
 export default class App extends React.Component {
   render() {
     return (
-      <View style={{flex:1}}>
-        <CardStatusBar backgroundColor={blue} barStyle='light-content'/>
-        <MainNavigator/>
-      </View>
-
+      <Provider store={store}>
+        <View style={{flex:1}}>
+          <CardStatusBar backgroundColor={blue} barStyle='light-content'/>
+          <MainNavigator/>
+        </View>
+      </Provider>
     );
   }
 }
