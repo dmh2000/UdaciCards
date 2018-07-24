@@ -4,12 +4,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import NavHeader from './NavHeader';
 import TextButton from './TextButton';
 import {black,white,gray} from '../utils/colors';
-
+import {getDeck} from '../utils/api.js';
 
 export default class DeckView extends React.Component {
 
   // component state
   state = {
+    deck:null,
     cards: 0,
     disableStart:true
   }
@@ -41,6 +42,15 @@ export default class DeckView extends React.Component {
   addQuestion = () => {
     this.props.navigation.navigate('NewQuestionView');
   }
+
+  componentDidMount() {
+    const deckName = this.props.navigation.state.params.deckName;
+    getDeck(deckName) 
+      .then( (deck) => {
+        console.log(deck);
+        // this.setState( {deck});
+      });
+   }
 
   // render
   render() {

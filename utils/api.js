@@ -46,11 +46,17 @@ export function getDecks() {
   })
   .catch( (error) => {
     return null;
-  })
+  });
 }
 
 export function getDeck(id) {
-
+  return AsyncStorage.getItem(DECK_STORAGE_KEY)
+  .then( (results) => {
+    return dummy[id];
+  })
+  .catch( (error) => {
+    return null;
+  });
 }
 
 export function saveDeckTitle(title) {

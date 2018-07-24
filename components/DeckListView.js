@@ -7,10 +7,10 @@ import {
   Dimensions,
   Animated
 } from 'react-native';
-
+import {FontAwesome} from '@expo/vector-icons';
 import TextButton from './TextButton';
 import {createId,getDecks} from '../utils/api.js';
-import {black,gray} from '../utils/colors';
+import {black,gray, white} from '../utils/colors';
 
 export default class DeckListView extends React.Component {
   state = {
@@ -27,6 +27,10 @@ export default class DeckListView extends React.Component {
       });
   }
   
+  onPressNew = () => {
+    this.props.navigation.navigate('NewDeckView');
+  }
+
   onPress(deckName) {
     return () => {
       // animation
@@ -36,7 +40,6 @@ export default class DeckListView extends React.Component {
         Animated.spring(bounceValue, {toValue:1}),
       ]).start( () => {
         // navigate to specified deck
-        console.log('start');
         this.setState({bounceValue:new Animated.Value(0)});
         this.props.navigation.navigate('DeckView', {deckName:deckName})
       });
@@ -72,7 +75,16 @@ export default class DeckListView extends React.Component {
   }
   
   render() {
-    console.log('render',this.state.bounceValue);
+    if (!this.state.decks) {
+      return (
+        <View style={styles.container}>
+          <Text style={[styles.title,{paddingBottom:40}]}>No Decks Yet! Create One!</Text>
+          <TextButton style={styles.blackButton} onPress={this.onPressNew}>
+            <Text>New Deck</Text>
+          </TextButton>
+        </View>
+      )
+    }
     return (
       <Animated.View style={[styles.container,{transform: [{scaleX:this.state.bounceValue}]}]}>
         {this.renderDeckList(this.state.decks)}
@@ -103,5 +115,11 @@ const styles = StyleSheet.create({
   count: {
     fontSize: 20,
     color:gray
-  }
+  }, 
+  blackButton: {
+    backgroundColor:black,
+    color:white,
+    width:200,
+    fontSize:15
+  },
 });
