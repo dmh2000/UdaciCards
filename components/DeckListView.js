@@ -7,7 +7,8 @@ import {
   View ,
   TouchableOpacity, 
   Dimensions,
-  Animated
+  Animated,
+  FlatList
 } from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
 
@@ -50,11 +51,8 @@ class DeckListView extends React.Component {
     }
   }
 
-  renderDeckList(decks) {
-
-    return Object.keys(decks).map( (id) => {
-
-      deck = decks[id];
+  renderDeck = ({item}) =>  {
+      const deck = item;
 
       // skip invalid decks
       if (!deck.hasOwnProperty('title')) {
@@ -62,24 +60,28 @@ class DeckListView extends React.Component {
       }
 
       // extract the parameters needed
-      len = decks[id].questions.length;
+      len = deck.questions.length;
 
+      // get number of cards string
       const cards = len === 1 
         ? '1 card'
         : `${len} cards`;
+
+      // computed parameters
       const title = deck.title;
-      const {width} = Dimensions.get('window');
-      
+      const dim = Dimensions.get('window');
+      const margin = dim.width * 0.10;
+      const width  = dim.width * 0.80;
+
       // render a pressable view
       return (
-      <TouchableOpacity key={title} onPress={this.onPress(title)}>
-      <View  style={[styles.card,{width:width-40}]}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.count}>{cards}</Text>
-      </View>
-      </TouchableOpacity>
+        <TouchableOpacity  style={[styles.card,{marginLeft:margin},{width:width}]}  onPress={this.onPress(title)}>
+        <Animated.View  style={[styles.container, {transform: [{scaleX:this.state.bounceValue}]}]}>          
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.count}>{cards}</Text>
+        </Animated.View>
+        </TouchableOpacity>
       )
-    })
   }
   
   render() {
@@ -103,12 +105,25 @@ class DeckListView extends React.Component {
         </View>
       )
     }
+    
+    // transform top level object to array of decks
+    // filter out invalid decks (left because emulator remembers bad values)
+    const decks = Object.keys(this.props.decks).filter( (name) => {
+      return this.props.decks[name].hasOwnProperty('title');
+    }).map( (id) => {
+      return this.props.decks[id];
+    });
 
     // got some decks, show them
     return (
-      <Animated.View style={[styles.container,{transform: [{scaleX:this.state.bounceValue}]}]}>
-        {this.renderDeckList(this.props.decks)}
-      </Animated.View>
+      <View styles={[styles.container]}>
+        <FlatList
+          data={decks}
+          showsVerticalScrollIndicator={true}
+          keyExtractor={(item,index) => item.title}
+          renderItem={this.renderDeck}
+          />
+      </View>
     );
   }
 }
@@ -127,18 +142,19 @@ export default connect(mapStateToProps)(DeckListView);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems:'center'
   },
   card: {
+    flex:1,
+    height: 110,
     alignItems: 'center',
+    backgroundColor: '#2196F3',
     borderBottomColor: black,
     borderBottomWidth: 1,
-    paddingTop: 40,
-    paddingBottom: 40,
-    marginTop: 20,
-    marginBottom:20
+    paddingTop: 20,
+    paddingBottom: 20,
+    marginTop: 10,
+    marginBottom:10,
   },
   title: {
     fontSize: 30

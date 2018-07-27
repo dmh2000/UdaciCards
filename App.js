@@ -1,7 +1,7 @@
 // library module imports
 import React from 'react';
 import { StyleSheet,  View , StatusBar, Platform} from 'react-native';
-import {createBottomTabNavigator, createStackNavigator} from 'react-navigation';
+import {createMaterialTopTabNavigator, createStackNavigator} from 'react-navigation';
 import {FontAwesome} from '@expo/vector-icons';
 import {Constants} from 'expo';
 import {createStore} from 'redux';
@@ -18,7 +18,7 @@ import reducer from './reducers';
 import middleware from './middleware';
 
 
-const Tabs = createBottomTabNavigator (
+const Tabs = createMaterialTopTabNavigator (
   {
     DeckListView: {
       screen: DeckListView,
@@ -113,7 +113,7 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <View style={{flex:1}}>
+        <View style={styles.container}>
           <CardStatusBar backgroundColor={blue} barStyle='light-content'/>
           <MainNavigator/>
         </View>
@@ -124,9 +124,6 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1
   },
 });
