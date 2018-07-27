@@ -1,4 +1,7 @@
-import {RECEIVE_DECKS} from '../actions';
+import {
+  RECEIVE_DECKS,
+  RECEIVE_DECK
+} from '../actions';
 
 function reducer(state = {}, action) {
   switch(action.type) {
@@ -7,6 +10,13 @@ function reducer(state = {}, action) {
       return {
         ...state,
         decks
+      };
+      break;
+    case RECEIVE_DECK:
+      const deck = action.payload;
+      return {
+        ...state,
+        deck
       };
       break;
     default:

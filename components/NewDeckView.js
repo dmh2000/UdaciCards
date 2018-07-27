@@ -1,11 +1,13 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import { StyleSheet, TextInput, Text,  View, Dimensions} from 'react-native';
 
 import NavHeader from './NavHeader';
 import TextButton from './TextButton';
 import {black,white,gray} from '../utils/colors';
+import {saveDeckTitle} from '../actions';
 
-export default class NewDeckView extends React.Component {
+export class NewDeckView extends React.Component {
 
   // object state
   state = {
@@ -27,10 +29,11 @@ export default class NewDeckView extends React.Component {
   onSubmit = () => {
     const deckName = this.state.text;
 
+    // create new deck
+    this.props.dispatch(saveDeckTitle(deckName));
+
     // clear text
     this.setState({text:""});
-
-    // create new deck
 
     // navigate to individual deck view
     this.props.navigation.navigate('DeckView', {deckName:deckName});
@@ -38,6 +41,8 @@ export default class NewDeckView extends React.Component {
 
   // render
   render() {
+    console.log(this.props);
+
     const {height,width} = Dimensions.get('window');
     const disable = this.state.text.length === 0;
     return (
@@ -45,11 +50,13 @@ export default class NewDeckView extends React.Component {
         <NavHeader title='udacicards' onPress={this.onNavPress}/>
         <View style={styles.container2}>
           <Text style={styles.name}>Name Your Deck!</Text>
-          <TextInput
-            style={[styles.input,{width:(width * 0.8)}]}
-            onChangeText={this.onChange}
-            value={this.state.text}
-            />
+          <View style={styles.wrap}>
+            <TextInput
+              style={[styles.input,{width:(width * 0.8)}]}
+              onChangeText={this.onChange}
+              value={this.state.text}
+              />
+            </View>
           <TextButton 
             style={styles.blackButton} 
             onPress={this.onSubmit} 
@@ -60,6 +67,16 @@ export default class NewDeckView extends React.Component {
     );
   }
 }
+
+// connect to redux
+function mapStateToProps(state) {
+  return {
+    ...state
+  }
+}
+
+// export connected view
+export default connect(mapStateToProps)(NewDeckView);
 
 const styles = StyleSheet.create({
   container1: {
@@ -80,10 +97,13 @@ const styles = StyleSheet.create({
     color:white
   },
   input : {
-    width:200,
-    borderWidth: 2,
+    marginLeft:4,
+    marginRight:4
+  },
+  wrap : {
+    borderWidth: 1,
     borderColor: black,
-    borderRadius:5
+    borderRadius:5,
   },
   name: {
     fontSize:20,

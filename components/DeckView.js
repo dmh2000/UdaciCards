@@ -1,12 +1,13 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 
 import NavHeader from './NavHeader';
 import TextButton from './TextButton';
 import {black,white,gray} from '../utils/colors';
-import {getDeck} from '../utils/api.js';
+import {getDeck} from '../actions';
 
-export default class DeckView extends React.Component {
+export class DeckView extends React.Component {
 
   // component state
   state = {
@@ -45,11 +46,7 @@ export default class DeckView extends React.Component {
 
   componentDidMount() {
     const deckName = this.props.navigation.state.params.deckName;
-    getDeck(deckName) 
-      .then( (deck) => {
-        console.log(deck);
-        // this.setState( {deck});
-      });
+    getDeck(deckName) ;
    }
 
   // render
@@ -57,6 +54,7 @@ export default class DeckView extends React.Component {
     const deckName = this.props.navigation.state.params.deckName;
     const disableSubmit = this.state.cards === 0;
 
+    console.log(this.props);
     return (
       <View style={styles.container}>
         <NavHeader title='udacicards' onPress={this.onNavPress}/>
@@ -79,6 +77,16 @@ export default class DeckView extends React.Component {
     );
   }
 }
+
+// connect to redux
+function mapStateToProps(state) {
+  return {
+    ...state
+  }
+}
+
+// export connected view
+export default connect(mapStateToProps)(DeckView);
 
 const styles = StyleSheet.create({
   container: {

@@ -51,17 +51,23 @@ class DeckListView extends React.Component {
   }
 
   renderDeckList(decks) {
-    if (!decks) {
-      return;
-    }
-    return Object.keys(decks).map( (deck) => {
+
+    return Object.keys(decks).map( (id) => {
+
+      deck = decks[id];
+
+      // skip invalid decks
+      if (!deck.hasOwnProperty('title')) {
+        return null;
+      }
 
       // extract the parameters needed
-      const len = decks[deck].questions.length;
-      const cards =  len === 1 
+      len = decks[id].questions.length;
+
+      const cards = len === 1 
         ? '1 card'
         : `${len} cards`;
-      const title = decks[deck].title;
+      const title = deck.title;
       const {width} = Dimensions.get('window');
       
       // render a pressable view
@@ -77,16 +83,17 @@ class DeckListView extends React.Component {
   }
   
   render() {
-    // no such prop yet
-    if (!this.props.hasOwnProperty('decks')) { 
+
+    if (!this.props.hasOwnProperty('decks')) {
       return (
         <View>
+          <Text>no decks</Text>
         </View>
-      );
+      )
     }
 
     // empty decks prop
-    if (Object.keys(this.props.decks).length === 0) {
+    if ((this.props.decks === null) || (Object.keys(this.props.decks).length === 0)) {
       return (
         <View style={styles.container}>
           <Text style={[styles.title,{paddingBottom:40}]}>No Decks Yet! Create One!</Text>
@@ -100,7 +107,7 @@ class DeckListView extends React.Component {
     // got some decks, show them
     return (
       <Animated.View style={[styles.container,{transform: [{scaleX:this.state.bounceValue}]}]}>
-        {this.renderDeckList(this.state.decks)}
+        {this.renderDeckList(this.props.decks)}
       </Animated.View>
     );
   }
@@ -108,7 +115,9 @@ class DeckListView extends React.Component {
 
 // connect to redux
 function mapStateToProps(state) {
-  return Object.assign({},state);
+  return {
+    ...state
+  }
 }
 
 // export connected view
