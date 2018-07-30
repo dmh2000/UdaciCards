@@ -18,6 +18,66 @@ import {loadDecks} from '../actions';
 import {black,gray, white} from '../utils/colors';
 
 /**
+ * Render individual deck info including link 
+ */
+class DeckRender extends React.PureComponent
+{
+  state = {
+    animate : new Animated.Value(0)
+  }
+  /**
+   * return a closure over the animate parameter
+   */
+  onPress = () => {
+    // invoke animation
+    // const {animate} = this.state;
+    Animated.sequence([
+      Animated.timing(this.state.animate, {duration:250,toValue:1}),
+      Animated.spring(this.state.animate, {toValue:1}),
+    ]).start( () => {
+      // reset the animation value
+      this.setState({animate:new Animated.Value(0)});
+      // then call delegated onPress back to main component
+      this.props.onPress(this.props.deck.title);
+    });
+  }
+  
+  render() {
+
+    const deck = this.props.deck;
+
+    // skip invalid decks
+    if (!deck.hasOwnProperty('title')) {
+      return null;
+    }
+
+    // extract the parameters needed
+    len = deck.questions.length;
+
+    // get number of cards string
+    const cards = len === 1 
+      ? '1 card'
+      : `${len} cards`;
+
+    // computed parameters
+    const title = deck.title;
+    const dim = Dimensions.get('window');
+    const margin = dim.width * 0.10;
+    const width  = dim.width * 0.80;
+
+    // render a pressable view
+    return (
+      <TouchableOpacity  style={[styles.card,{marginLeft:margin},{width:width}]}  onPress={this.onPress}>
+      <Animated.View  style={[styles.container, {transform: [{scaleX:this.state.animate},{scaleY:this.state.animate}]}]}>          
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.count}>{cards}</Text>
+      </Animated.View>
+      </TouchableOpacity>
+    )
+  }
+}
+
+/**
  * show the list of available decks
  * or a way to create the first one
  */
@@ -26,64 +86,38 @@ class DeckListView extends React.Component {
     bounceValue: new Animated.Value(0)
   }
 
-  componentDidMount() {
-    this.props.dispatch(loadDecks());
-  }
-  
+  /**
+   * invokes adding a new deck
+   */
   onPressNew = () => {
     this.props.navigation.navigate('NewDeckView');
   }
 
-  onPress(deckName) {
-    return () => {
-      // animation
-      const {bounceValue} = this.state;
-      Animated.sequence([
-        Animated.timing(bounceValue, {duration:250,toValue:1}),
-        Animated.spring(bounceValue, {toValue:1}),
-      ]).start( () => {
-        // navigate to specified deck
-        this.setState({bounceValue:new Animated.Value(0)});
-        this.props.navigation.navigate('DeckView', {deckName:deckName})
-      });
-
-
-    }
+  /**
+   * DeckRender component calls this with deckname
+   */
+  onPress = (deckName) => {
+    // console.log('onpress list', deckName);
+    this.props.navigation.navigate('DeckView', {deckName:deckName})
   }
 
-  renderDeck = ({item}) =>  {
-      const deck = item;
-
-      // skip invalid decks
-      if (!deck.hasOwnProperty('title')) {
-        return null;
-      }
-
-      // extract the parameters needed
-      len = deck.questions.length;
-
-      // get number of cards string
-      const cards = len === 1 
-        ? '1 card'
-        : `${len} cards`;
-
-      // computed parameters
-      const title = deck.title;
-      const dim = Dimensions.get('window');
-      const margin = dim.width * 0.10;
-      const width  = dim.width * 0.80;
-
-      // render a pressable view
-      return (
-        <TouchableOpacity  style={[styles.card,{marginLeft:margin},{width:width}]}  onPress={this.onPress(title)}>
-        <Animated.View  style={[styles.container, {transform: [{scaleX:this.state.bounceValue}]}]}>          
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.count}>{cards}</Text>
-        </Animated.View>
-        </TouchableOpacity>
-      )
+  /**
+   * FlatList renderItem function
+   */
+  renderDeck = ({item}) =>  (
+      <DeckRender deck={item} onPress={this.onPress}/>
+  )
+  
+  /**
+   * load all the decks
+   */
+  componentDidMount() {
+    this.props.dispatch(loadDecks());
   }
   
+  /**
+   * render main view
+   */
   render() {
 
     if (!this.props.hasOwnProperty('decks')) {
@@ -114,6 +148,8 @@ class DeckListView extends React.Component {
       return this.props.decks[id];
     });
 
+    // at this point 'decks' is an array of deck objects
+
     // got some decks, show them
     return (
       <View styles={[styles.container]}>
@@ -138,7 +174,9 @@ function mapStateToProps(state) {
 // export connected view
 export default connect(mapStateToProps)(DeckListView);
 
-
+/**
+ * local  styles
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
