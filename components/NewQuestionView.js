@@ -1,11 +1,14 @@
 import React from 'react';
+import {connect} from 'react-redux';
+
 import { StyleSheet, TextInput, Text,  View, Dimensions} from 'react-native';
 
 import NavHeader from './NavHeader';
 import TextButton from './TextButton';
 import {black,white,gray} from '../utils/colors';
+import {addCardToDeck} from '../actions';
 
-export default class NewQuestionView extends React.Component {
+class NewQuestionView extends React.Component {
 
   // object state
   state = {
@@ -19,12 +22,12 @@ export default class NewQuestionView extends React.Component {
   }
 
   onSubmit = () => {
-    const deckName = this.state.text;
-
+    const deckName = this.props.navigation.state.params.deckName;
     // clear text
-    this.setState({text:""});
+    this.setState({question:"",answer:""});
 
-    // create new deck
+    // create new question
+    this.props.dispatch(addCardToDeck(deckName,this.state.question,this.state.answer))
 
     // navigate to individual deck view
     this.props.navigation.navigate('DeckView', {deckName:deckName});
@@ -40,19 +43,23 @@ export default class NewQuestionView extends React.Component {
         <View style={styles.container2}>
           <View style={styles.textEntry}>
             <Text style={{fontSize:20}}>Question:</Text>
-            <TextInput
-              style={[styles.input,{width:(width * 0.90)}]}
-              onChangeText={(question) => this.setState({question})}
-              value={this.state.question}
-              />
+            <View style={styles.wrap}>
+              <TextInput
+                style={[styles.input,{width:(width * 0.90)}]}
+                onChangeText={(question) => this.setState({question})}
+                value={this.state.question}
+                />
+            </View>
           </View>
           <View style={styles.textEntry}>
             <Text style={{fontSize:20}}>Answer:</Text>
-            <TextInput
-              style={[styles.input,{width:(width * 0.90)}]}
-              onChangeText={(answer) => this.setState({answer})}
-              value={this.state.answer}
-              />
+            <View style={styles.wrap}>
+              <TextInput
+                style={[styles.input,{width:(width * 0.90)}]}
+                onChangeText={(answer) => this.setState({answer})}
+                value={this.state.answer}
+                />
+              </View>
             </View>
             <TextButton 
               style={styles.blackButton} 
@@ -63,6 +70,16 @@ export default class NewQuestionView extends React.Component {
     );
   }
 }
+
+// connect to redux
+function mapStateToProps({decks}) {
+  return {
+    decks
+  }
+}
+
+// export connected view
+export default connect(mapStateToProps)(NewQuestionView);
 
 const styles = StyleSheet.create({
   container1: {
@@ -83,11 +100,8 @@ const styles = StyleSheet.create({
     color:white
   },
   input : {
-    borderWidth: 2,
-    borderColor: black,
-    borderRadius:5,
-    marginTop:10,
-    marginBottom:40
+    marginLeft:4,
+    marginRight:4,
   },
   name: {
     fontSize:20,
@@ -95,5 +109,10 @@ const styles = StyleSheet.create({
   },
   textEntry: {
     alignItems:"center",
-  }
+  },
+  wrap : {
+    borderWidth: 1,
+    borderColor: black,
+    borderRadius:5,
+  },
 });

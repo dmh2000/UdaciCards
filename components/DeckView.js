@@ -5,14 +5,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import NavHeader from './NavHeader';
 import TextButton from './TextButton';
 import {black,white,gray} from '../utils/colors';
-import {getDeck} from '../actions';
+import {getDecks} from '../actions';
 
-export class DeckView extends React.Component {
+class DeckView extends React.Component {
 
   // component state
   state = {
-    deck:null,
-    cards: 0,
     disableStart:true
   }
 
@@ -22,14 +20,14 @@ export class DeckView extends React.Component {
   }
 
   // handle non,singular,plural
-  showCards(cards) {
-    switch(cards) {
+  showQuestions(questions) {
+    switch(questions) {
       case 0:
         return 'No Cards';
       case 1:
         return '1 Card';
       default:
-        return `${cards.toString()} Cards`;
+        return `${questions.toString()} Cards`;
     }
   }
 
@@ -41,27 +39,26 @@ export class DeckView extends React.Component {
 
   // navigate to add question
   addQuestion = () => {
-    this.props.navigation.navigate('NewQuestionView');
+    const deckName = this.props.navigation.state.params.deckName;       
+    this.props.navigation.navigate('NewQuestionView',{deckName:deckName});
   }
 
   componentDidMount() {
-    const deckName = this.props.navigation.state.params.deckName;
-    getDeck(deckName) ;
-   }
+  }
 
   // render
   render() {
     const deckName = this.props.navigation.state.params.deckName;
-    const disableSubmit = this.state.cards === 0;
+    const deck = this.props.decks[deckName];
+    const disableSubmit = deck.questions.length === 0;
 
-    console.log(this.props);
     return (
       <View style={styles.container}>
         <NavHeader title='udacicards' onPress={this.onNavPress}/>
         <View style={styles.container}>
           <View style={styles.top}>
             <Text style={styles.title}>{deckName}</Text>
-            <Text style={styles.count}>{this.showCards(this.state.cards)}</Text>
+            <Text style={styles.count}>{this.showQuestions(deck.questions.length)}</Text>
           </View>
           <View style={styles.bottom}>
             <TextButton style={styles.whiteButton} onPress={this.addQuestion}>Add Card</TextButton>

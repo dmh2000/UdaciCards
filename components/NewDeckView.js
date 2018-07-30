@@ -7,7 +7,7 @@ import TextButton from './TextButton';
 import {black,white,gray} from '../utils/colors';
 import {saveDeckTitle} from '../actions';
 
-export class NewDeckView extends React.Component {
+class NewDeckView extends React.Component {
 
   // object state
   state = {
@@ -41,7 +41,6 @@ export class NewDeckView extends React.Component {
 
   // render
   render() {
-    console.log(this.props);
 
     const {height,width} = Dimensions.get('window');
     const disable = this.state.text.length === 0;

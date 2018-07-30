@@ -1,8 +1,7 @@
-import {_setInitialData,_getDecks,_getDeck,_saveDeckTitle,_addCard} from '../utils/api';
+import {_setInitialData,_getDecks,_saveDeckTitle, _addCardToDeck} from '../utils/api';
 
 export const LOAD_DECKS = 'LOAD_DECKS';
 export const RECEIVE_DECKS = 'RECEIVE_DECKS';
-export const RECEIVE_DECK  = 'RECEIVE_DECK';
 export const ADD_CARD = 'ADD_QUESTION';
 export const SAVE_TITLE = 'SAVE_TITLE';
 
@@ -17,8 +16,6 @@ export const SAVE_TITLE = 'SAVE_TITLE';
  * }
  */
 
-
-
 /**
  * dispatch decks reducer
  */
@@ -30,58 +27,31 @@ export function receiveDecks(decks) {
 }
 
 /**
- * dispatch deck reducer
- */
-export function receiveDeck(deck) {
-
-  return {
-    type: RECEIVE_DECK,
-    payload: deck
-  };
-}
-
-
-/**
  * get all decks from storage then dispatch
  * receiveDecks action creator
  */
 export function loadDecks() {
-  console.log('load decks');
   return (dispatch) => {
-    console.log('getDecks');
     _getDecks()
     .then( (decks) => {
-      console.log('receive decks');
       dispatch(receiveDecks(decks));
     });
   };
 }
 
 /**
- * get all the decks, extract the one with the specified id
- * and dispatch receiveDeck action creator
- * @param {string} id 
- */
-export function getDeck(id) {
-  return (dispatch) => {
-    console.log('getDeck',id);
-    _getDecks()
-    .then( (decks) => {
-      console.log(decks);
-      dispatch(receiveDeck(decks[id]));
-    });
-  };
-}
-
-
-/**
  * 
  * @param {object} card 
  */
-export function addCardToDeck(card) {
-  return {
-    type: ADD_CARD,
-    payload: card
+export function addCardToDeck(id,question,answer) {
+  return (dispatch) => {
+    _addCardToDeck(id,question,answer)
+    .then( () => {
+      _getDecks()
+      .then( (decks) => {
+        dispatch(receiveDecks(decks));
+      });
+    });
   };
 }
 
@@ -92,12 +62,10 @@ export function addCardToDeck(card) {
 export function saveDeckTitle(title) {
   // save title (creates new quiz) then reread the deck object
   return (dispatch) => {
-    console.log('save title',title);
     return _saveDeckTitle(title)
     .then( () => {
       _getDecks()
       .then( (decks) => {
-        console.log('reload decks');
         dispatch(receiveDecks(decks));
       });
     });

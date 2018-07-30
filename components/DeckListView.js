@@ -32,8 +32,7 @@ class DeckRender extends React.PureComponent
     // invoke animation
     // const {animate} = this.state;
     Animated.sequence([
-      Animated.timing(this.state.animate, {duration:250,toValue:1}),
-      Animated.spring(this.state.animate, {toValue:1}),
+      Animated.spring(this.state.animate, {toValue:1})
     ]).start( () => {
       // reset the animation value
       this.setState({animate:new Animated.Value(0)});
@@ -97,7 +96,6 @@ class DeckListView extends React.Component {
    * DeckRender component calls this with deckname
    */
   onPress = (deckName) => {
-    // console.log('onpress list', deckName);
     this.props.navigation.navigate('DeckView', {deckName:deckName})
   }
 

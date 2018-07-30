@@ -1,9 +1,11 @@
 import {
   RECEIVE_DECKS,
-  RECEIVE_DECK
+  RECEIVE_DECK,
+  ADD_CARD
 } from '../actions';
 
 function reducer(state = {}, action) {
+  let deck;
   switch(action.type) {
     case RECEIVE_DECKS:
       const decks = JSON.parse(action.payload);
@@ -11,14 +13,6 @@ function reducer(state = {}, action) {
         ...state,
         decks
       };
-      break;
-    case RECEIVE_DECK:
-      const deck = action.payload;
-      return {
-        ...state,
-        deck
-      };
-      break;
     default:
       return state;
   }
