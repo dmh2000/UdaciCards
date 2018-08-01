@@ -1,4 +1,6 @@
 import React from 'react';
+import {connect} from 'react-redux';
+
 import { StyleSheet, 
          TextInput, 
          Text,  
@@ -10,36 +12,59 @@ import NavHeader from './NavHeader';
 import TextButton from './TextButton';
 import {green,red,white} from '../utils/colors';
 
-export default class NewDeckView extends React.Component {
+class QuizView extends React.Component {
 
   constructor() {
     super();
 
     this.state  = {
       showAnswer:false,
+      index: -1,
+      count: 0,
+      correct: 0,
+      done: false,
     }
   }
 
   // bind onPress to this via arrow function
   onNavPress = () => {
-    this.props.navigation.navigate('DeckView', {deckName:'quiz'});
+    const done  = this.state.done;
+    const title = this.state.deck.title;
+
+    if (done) {
+      // done, go to home page
+      this.props.navigation.navigate('DeckListView', {deckName:'home'});
+    }
+    else {
+      // not done, go back to quiz
+      this.props.navigation.navigate('DeckView', {deckName:title});
+    }
   }
 
   onCorrect = () => {
     console.log('correct');
 
-    // update score
+    // get state params
+    const correct = this.state.correct + 1;
+    const index   = this.state.index + 1;
+    const count   = this.state.count;
+    const done    = index === count;
 
-    // advance to next question
+    // update state and advance to next question
+    this.setState({correct,index,done});
   }
 
   // incorrect button
   onIncorrect = () => {
     console.log('incorrect');
 
-    // update score
+    // get state params
+    const index   = this.state.index + 1;
+    const count   = this.state.count;
+    const done    = index === count;
 
-    // advance to next question
+    // update state and advance to next question
+    this.setState({index,done});
   }
 
   // toggle show answer
@@ -49,58 +74,154 @@ export default class NewDeckView extends React.Component {
     });
   }
 
-  display = () => {
+  /**
+   * show buttons
+   */
+  buttons = () => {
+    return (
+    <View>
+      <TextButton
+        style={styles.greenButton} 
+        onPress={this.onCorrect}
+        disabled={false}
+      >Correct</TextButton>
+      <TextButton 
+        style={styles.redButton} 
+        onPress={this.onIncorrect}
+        disabled={false}
+      >Incorrect</TextButton>
+    </View>
+    )
+  }
+  
+  /**
+   * display questions, answers and buttons
+   */
+  display = (question,answer) => {
     if (this.state.showAnswer) {
       // show answer text
       return (
-        <View style={styles.show}>
-          <Text style={styles.question}>Yes</Text>
-          <TextButton 
-            style={styles.answerButton} 
-            onPress={this.onAnswer}
-            disabled={false}
-          >Question</TextButton>
+        <View>
+          <View style={styles.show}>
+            <Text style={styles.question}>{answer}</Text>
+            <TextButton 
+              style={styles.answerButton} 
+              onPress={this.onAnswer}
+              disabled={false}
+            >Question</TextButton>
+          </View>
+          {this.buttons()}
         </View>
       )
     }
     else {
       // show question text
       return (
-        <View style={styles.show}>
-          <Text style={styles.question}>Wut!</Text>
-          <TextButton 
-            style={styles.answerButton} 
-            onPress={this.onAnswer}
-            disabled={false}
-            >Answer</TextButton>
+        <View>
+          <View style={styles.show}>
+            <Text style={styles.question}>{question}</Text>
+            <TextButton 
+              style={styles.answerButton} 
+              onPress={this.onAnswer}
+              disabled={false}
+              >Answer</TextButton>
+          </View>
+          {this.buttons()}
         </View>
-      )
+        )
     }
   }
+  
+  summary = (count,correct) => {
+    return (
+      <View>
+        <Text>no more questions</Text>
+      </View>
+    );
+  }
+
+  componentDidMount() {
+
+    // get initial deck parameters
+    const deckName  = this.props.navigation.state.params.deckName;
+    const deck      = this.props.decks[deckName];
+    const count     = deck.questions.length;
+    const index     = 0; // question index
+    const correct   = 0; // number correct
+    this.setState({deck, index, count, correct})
+  }
+
    // render
   render() {
     const {height,width} = Dimensions.get('window');
+    console.log('quizview' ,this.props);
+    console.log('quizstate', this.state);
+
+    // wait for mount and deck update
+    if (!this.state.hasOwnProperty('deck')||(this.state.deck === null)) {
+      return (
+        <View>
+        </View>
+      )
+    }
+
+    // extract the relevant parameters
+    const title     = this.state.deck.title;
+    const questions = this.state.deck.questions;  // array of questions
+    const index     = this.state.index;           // current question index
+    const count     = this.state.count;           // total number of questions
+    const correct   = this.state.correct;         // number answered correctly
+    const done      = this.state.done;
+
+    // get next question tunil 
+    let question;
+    let answer;
+    let nav;
+    if (!done) {
+      question  = questions[index].question;  // question text
+      answer    = questions[index].answer;    // answer text
+      nav       = 'Quiz';
+    }
+    else {
+      // indicates no more questions
+      question = answer = null;
+      nav = 'Home';
+    }
+
     return (
       <View style={styles.container1}>
-        <NavHeader title='Quiz' onPress={this.onNavPress}/>
-        <Text style={styles.count}>1/1</Text>
+        <NavHeader title={nav} onPress={this.onNavPress}/>
+        
+        {
+          // show count or nothing if no more questions
+          (!done) 
+          ? <Text style={styles.count}>{index + 1}/{questions.length} : {title} </Text>
+          : null
+        }
+        
         <View style={styles.container2}>
-          {this.display()}
-          <TextButton
-            style={styles.greenButton} 
-            onPress={this.onCorrect}
-            disabled={false}
-            >Correct</TextButton>
-          <TextButton 
-            style={styles.redButton} 
-            onPress={this.onIncorrect}
-            disabled={false}
-            >Incorrect</TextButton>
+        {
+          // show questions or summary
+          (done) 
+          ? this.summary(count,correct)
+          : this.display(question, answer)
+        }
+
         </View>
       </View>
     );
   }
 }
+
+// connect to redux
+function mapStateToProps(state) {
+  return {
+    ...state
+  }
+}
+
+// export connected view
+export default connect(mapStateToProps)(QuizView);
 
 const styles = StyleSheet.create({
   container1: {
@@ -140,5 +261,8 @@ const styles = StyleSheet.create({
   },
   count: {
     fontWeight: 'bold'
+  },
+  title: {
+    
   }
 });

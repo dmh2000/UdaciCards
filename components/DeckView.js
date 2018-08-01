@@ -33,8 +33,10 @@ class DeckView extends React.Component {
 
   // navigate to quiz view
   gotoQuiz = () => {
-    const deckName = this.props.navigation.state.params.deckName;    
-    this.props.navigation.navigate('QuizView', {deckName:deckName});
+    const deckName = this.props.navigation.state.params.deckName;   
+    const count    = this.props.decks[deckName].questions.length; 
+    const score    = 0;
+    this.props.navigation.navigate('QuizView', {deckName, count, score});
   }
 
   // navigate to add question
