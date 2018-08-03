@@ -32,7 +32,9 @@ class DeckRender extends React.PureComponent
     // invoke animation
     // const {animate} = this.state;
     Animated.sequence([
-      Animated.spring(this.state.animate, {toValue:1})
+      Animated.timing(this.state.animate, {toValue:15,duration:100}),
+      Animated.timing(this.state.animate, {toValue:-15,duration:100}),
+      Animated.timing(this.state.animate, {toValue:0,duration:100}),
     ]).start( () => {
       // reset the animation value
       this.setState({animate:new Animated.Value(0)});
@@ -65,9 +67,11 @@ class DeckRender extends React.PureComponent
     const width  = dim.width * 0.80;
 
     // render a pressable view
+    console.log('title',title);
+    console.log('cards',cards);
     return (
       <TouchableOpacity  style={[styles.card,{marginLeft:margin},{width:width}]}  onPress={this.onPress}>
-      <Animated.View  style={[styles.container, {transform: [{scaleX:this.state.animate},{scaleY:this.state.animate}]}]}>          
+      <Animated.View  style={[styles.container, {transform: [{translateX:this.state.animate}]}]}>          
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.count}>{cards}</Text>
       </Animated.View>
