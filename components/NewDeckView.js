@@ -32,20 +32,16 @@ class NewDeckView extends React.Component {
     // clear text
     this.setState({text:""});
 
+
     // if no decks with this title exist, create it
     // otherwise just navigate to the existing one
     if (!this.props.decks.hasOwnProperty(deckName)) {
       // create new deck
-      this.props.dispatch(saveDeckTitle(deckName))
-      .then( () => {
-        // navigate to individual deck view
-        this.props.navigation.navigate('DeckView', {deckName:deckName});
-      })
+      this.props.dispatch(saveDeckTitle(deckName));
     }
-    else {
-        // navigate to individual deck view
-        this.props.navigation.navigate('DeckView', {deckName:deckName});
-    }
+
+    // navigate to individual deck view
+    this.props.navigation.navigate('DeckView', {deckName:deckName});
   }
 
   // render

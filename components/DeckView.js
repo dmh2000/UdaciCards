@@ -51,7 +51,17 @@ class DeckView extends React.Component {
   // render
   render() {
     const deckName = this.props.navigation.state.params.deckName;
+
+    // get the deck object (if there is one yet)
     const deck = this.props.decks[deckName];
+
+    // wait for deck object update before rendering
+    if (!deck) {
+      return (
+        <View>
+        </View>
+      )
+    }
     const disableSubmit = deck.questions.length === 0;
 
     return (
