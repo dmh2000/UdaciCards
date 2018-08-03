@@ -13,11 +13,19 @@ export function _getDecks() {
 
   return AsyncStorage.getItem(DECK_STORAGE_KEY)
   .then( (results) => {
-    return results;
+    console.log('results',results);
+    if (!results) {
+      AsyncStorage.setItem(DECK_STORAGE_KEY,JSON.stringify({}))
+      .then( () => {
+        return {};
+      });
+    }
+    else {
+      return results;
+    }
   })
   .catch( (error) => {
     console.error(error);
-    return {};
   });
 }
 

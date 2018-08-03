@@ -32,7 +32,6 @@ class NewDeckView extends React.Component {
     // clear text
     this.setState({text:""});
 
-
     // if no decks with this title exist, create it
     // otherwise just navigate to the existing one
     if (!this.props.decks.hasOwnProperty(deckName)) {
