@@ -5,7 +5,7 @@ import { Notifications, Permissions} from 'expo';
 const NOTIFICATION_KEY = 'Udacicards:notifications';
 
 /**
- * clear the notificatino
+ * clear the notification
  */
 export function clearLocalNotification() {
   return AsyncStorage.removeItem(NOTIFICATION_KEY)
@@ -23,10 +23,7 @@ export function createNotification() {
       sound:true
     },
     android: {
-      sound:true,
-      priority: 'high',
       sticky:false,
-      vibrate:true
     }
   };
 }
@@ -38,22 +35,25 @@ export function setLocalNotification() {
   AsyncStorage.getItem(NOTIFICATION_KEY)
   .then(JSON.parse)
   .then( (data) => {
+    console.log('setLocalNotification',data);
     if (data === null) {
       Permissions.askAsync(Permissions.NOTIFICATIONS)
       .then( ( {status} ) => {
+        console.log('notification status',status);
         if (status === 'granted') {
           Notifications.cancelAllScheduledNotificationsAsync();
 
           let tomorrow = new Date();
-          tomorrow.setDate(tomorrow.getDate());
-          tomorrow.setHours(9);
-          tomorrow.setMinutes(55);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          tomorrow.setHours(8);
+          tomorrow.setMinutes(0);
+          console.log('tomorrow',tomorrow);
 
           Notifications.scheduleLocalNotificationAsync(
             createNotification(),
             {
               time: tomorrow,
-              repease: 'day',
+              repeat: 'day',
             }
           );
           AsyncStorage.setItem(NOTIFICATION_KEY,JSON.stringify(true));

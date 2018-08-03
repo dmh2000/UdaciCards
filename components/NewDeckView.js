@@ -65,6 +65,9 @@ class NewDeckView extends React.Component {
             onPress={this.onSubmit} 
             disabled={disable}
             >Submit</TextButton>
+          <Text style={styles.info}>
+          If you use the name of an existing deck, you will be routed to that one!
+          </Text>
         </View>
       </View>
     );
@@ -107,9 +110,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: black,
     borderRadius:5,
+    paddingTop:10,
+    paddingBottom:5,
   },
   name: {
     fontSize:20,
     paddingBottom:20
+  },
+  info: {
+    fontSize:10,
+    color:gray
   }
 });

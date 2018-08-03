@@ -114,5 +114,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: black,
     borderRadius:5,
+    paddingTop:10,
+    paddingBottom:5,    
   },
 });
