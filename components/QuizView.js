@@ -10,7 +10,7 @@ import { StyleSheet,
 
 import NavHeader from './NavHeader';
 import TextButton from './TextButton';
-import {green,red,white} from '../utils/colors';
+import {green,red,white,black} from '../utils/colors';
 
 class QuizView extends React.Component {
 
@@ -132,10 +132,34 @@ class QuizView extends React.Component {
     }
   }
   
+  onPressGotoHome = () => {
+    this.props.navigation.navigate('DeckListView');
+  }
+
+  onPressBackToQuiz = () => {
+    const title = this.state.deck.title;
+    this.props.navigation.navigate('DeckView', {deckName:title});
+  }
+
   summary = (count,correct) => {
+    console.log('summary',this.state);
     return (
-      <View>
-        <Text>no more questions</Text>
+      <View style={styles.container2}>
+        <Text style={styles.summary}>You got {this.state.correct} of {this.state.count} correct.</Text>
+        <TextButton 
+          style={styles.whiteButton} 
+          onPress={this.onPressGotoHome}
+          disabled={false}
+          >
+          Home
+        </TextButton>        
+        <TextButton 
+          style={styles.whiteButton} 
+          onPress={this.onPressBackToQuiz}
+          disabled={false}
+          >
+          Repeat The Quiz
+        </TextButton>        
       </View>
     );
   }
@@ -185,7 +209,7 @@ class QuizView extends React.Component {
     else {
       // indicates no more questions
       question = answer = null;
-      nav = 'Home';
+      nav = 'Quiz';
     }
 
     return (
@@ -262,7 +286,16 @@ const styles = StyleSheet.create({
   count: {
     fontWeight: 'bold'
   },
-  title: {
-    
-  }
+  summary : {
+    fontSize: 30,
+    marginBottom:20
+  },
+  whiteButton: {
+    backgroundColor:white,
+    color:black,
+    borderWidth:2,
+    borderColor:black,
+    paddingTop: 10,
+    width:200
+  },
 });

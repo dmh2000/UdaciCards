@@ -29,14 +29,18 @@ class NewDeckView extends React.Component {
   onSubmit = () => {
     const deckName = this.state.text;
 
-    // create new deck
-    this.props.dispatch(saveDeckTitle(deckName));
-
-    // clear text
-    this.setState({text:""});
+    // if no decks with this title exist, create it
+    // otherwise just navigate to the existing one
+    if (!this.props.decks.hasOwnProperty(deckName)) {
+      // create new deck
+      this.props.dispatch(saveDeckTitle(deckName));
+    }
 
     // navigate to individual deck view
     this.props.navigation.navigate('DeckView', {deckName:deckName});
+    
+    // clear text
+    this.setState({text:""});
   }
 
   // render
