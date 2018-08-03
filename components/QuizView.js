@@ -209,7 +209,7 @@ class QuizView extends React.Component {
     else {
       // indicates no more questions
       question = answer = null;
-      nav = 'Quiz';
+      nav = 'Home';
     }
 
     return (

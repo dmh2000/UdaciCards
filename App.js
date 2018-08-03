@@ -16,7 +16,7 @@ import QuizView from './components/QuizView';
 import {white, black, blue} from './utils/colors';
 import reducer from './reducers';
 import middleware from './middleware';
-
+import { setLocalNotification} from './utils/helpers';
 
 const Tabs = createMaterialTopTabNavigator (
   {
@@ -109,6 +109,10 @@ function CardStatusBar ({backgroundColor,...props}) {
 const store = createStore(reducer,middleware);
 
 export default class App extends React.Component {
+  componentDidMount() {
+    // activate the notification
+    setLocalNotification();
+  }
 
   render() {
     return (
