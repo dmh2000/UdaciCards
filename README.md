@@ -1,3 +1,6 @@
+
+React Native App - Udacity React Nanodegree Final Project
+
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 
 ## Table of Contents
