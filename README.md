@@ -39,7 +39,7 @@ Connect to the device or emulator according to the instructions shown on the ter
 
 ### Notes
 
-* This project was tested on Android using both an emulator and an Android device). It was tested on IOS using an IMac with emulator.
+* This project was tested on Android using both an emulator and an Android device. It was tested on IOS using an IMac with emulator.
 
 * One issue that isn't clear from the project instructions or the rubric was what to do if a user tried to create a new Deck but entered the name
   of an existing deck. I opted to implement logic so that when a duplicate new Deck name was entered, it vectored to the existing Deck with the same 
