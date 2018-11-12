@@ -1,6 +1,8 @@
 
 React Native App - Udacity React Nanodegree Final Project
 
+This project implements an application that supports creating decks of question/answer cards, lets users execute a deck of cards and keeps score of the results. It is implemented using React Native.
+
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 
 ## Table of Contents
